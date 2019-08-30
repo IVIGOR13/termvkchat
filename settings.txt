@@ -1,0 +1,2 @@
+TOKEN={Your community token}
+USER_NAME={Your name in dialog (local)}
