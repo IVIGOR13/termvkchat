@@ -8,12 +8,15 @@ small program for communication in the social network VKontakte on behalf of the
 ## Commands
 ### In the dialogue selection menu:
 * exit - close the programm
+* upd - reload list contacts
 
 ### In dialogue
 * exit - close the dialog
 * del {number} - remove message for your (numbering starts at 1, at the end)
 * delfa {number} - remove message for all
 * edit {number} {text} - edit message
+* history {number} - load history messaging
+* rd - read messages
 
 ## Installation
 Repository cloning
@@ -31,8 +34,6 @@ move the file /print_chat/print_chat.py to the directory /termvkchat/
 in the settings.txt file, specify the missing data:
 * token your vk community
 * your name to display in the chat
-
-in the contacts.txt file specify vk_id your contacts
 
 ## Launch
 ```
