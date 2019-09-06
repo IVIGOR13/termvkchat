@@ -80,36 +80,47 @@ class DialogData:
                     count=200,
                     filter='all',
                 )
+
             for i in range(len(self.results['items'])):
                 ids.append(str(self.results['items'][i]['conversation']['peer']['id']))
+
             info = self.vk.users.get(
                     user_ids=', '.join(ids),
                     fields='online',
                 )
+
             for index, dialog in enumerate(self.results['items']):
                 user_id = dialog['conversation']['peer']['id']
+
                 if 'unread_count' in list(dialog['conversation'].keys()):
                     unread = int(dialog['conversation']['unread_count'])
                 else:
                     unread = 0
+
                 last_message = dialog['last_message']['text']
                 name = info[index]["first_name"] + ' ' + info[index]['last_name']
                 online = False
-                if int(info[index]["online"]) == 1: online = True
+                if int(info[index]["online"]) == 1:
+                    online = True
 
                 print('{}) {}'.format(index+1, name), end='')
-                if online: print(' [online]', end='')
-                if unread > 0: print(' (unread: {})'.format(unread), end='')
+                if online:
+                    print(' [online]', end='')
+                if unread > 0:
+                    print(' (unread: {})'.format(unread), end='')
                 print()
 
         def select(n):
             n = int(n)
 
             self.OPPONENT_ID = ids[n-1]
+
             info = self.vk.users.get(
                     user_ids=self.OPPONENT_ID,
                 )
+
             self.OPPONENT_NAME = info[0]["first_name"] + ' ' + info[0]['last_name']
+
             if 'unread_count' in list(self.results['items'][n-1]['conversation'].keys()):
                 self.UNREAD_COUNT = int(self.results['items'][n-1]['conversation']['unread_count'])
             else:
@@ -160,7 +171,6 @@ class ChatListener(Thread):
                                 event.text,
                                 event.message_id
                             )
-
 
                 elif event.type == VkEventType.MESSAGE_EDIT:
                     if self.opponent_id == str(event.user_id):
@@ -217,7 +227,6 @@ class ChatDraw:
             ])
         self.pc.set_header('| Dialog with ' + dialog_data.OPPONENT_NAME + ' |\n+' + '-'*(len(dialog_data.OPPONENT_NAME)+12+2) + '+')
 
-
     def new_message(self, sender, text, id):
         self.pc.clear_row()
 
@@ -234,7 +243,6 @@ class ChatDraw:
         dialog_data.MESSAGES_IDS.append(str(id))
         print('> ', end='')
 
-
     def edit_message(self, id, text):
         self.pc.clear_row()
         number = len(dialog_data.MESSAGES_IDS) - dialog_data.MESSAGES_IDS.index(str(id))
@@ -247,14 +255,12 @@ class ChatDraw:
             self.pc.edit_mark(number, ' ' + self.editable)
         print('> ', end='')
 
-
     def remove_message(self, id):
         self.pc.clear_row()
         number = len(dialog_data.MESSAGES_IDS) - dialog_data.MESSAGES_IDS.index(str(id))
         self.pc.remove(number)
         del dialog_data.MESSAGES_IDS[dialog_data.MESSAGES_IDS.index(str(id))]
         print('> ', end='')
-
 
     def markAsRead(self):
         if not len(dialog_data.MESSAGES_IDS) == 0:
@@ -269,7 +275,6 @@ class ChatDraw:
                 else:
                     break
                 n += 1
-
 
     def markAsRead_opponent(self):
         n = 1
@@ -287,8 +292,7 @@ class ChatDraw:
             else:
                 break
 
-
-    def loadHistory(self, results):
+    def loadHistory(self, results, mark=[]):
         h = len(dialog_data.MESSAGES_IDS)
         h = 0
         l = len(results["items"])
@@ -303,10 +307,11 @@ class ChatDraw:
                 sender = user_data.USER_NAME
 
             time = self.timestamp_to_time(info["date"])
-            self.pc.add_message_top(sender, post, time=time, mark=[], prnt=False)
+            self.pc.add_message_top(sender, post, time=time, mark=mark, prnt=False)
             dialog_data.MESSAGES_IDS.insert(0, str(info["id"]))
 
         self.pc.reload(self.pc.get_num_messages())
+
 
     def loadUnRead(self):
         results = vk.messages.getHistory(
@@ -314,10 +319,7 @@ class ChatDraw:
                 count=dialog_data.UNREAD_COUNT,
                 offset=0,
             )
-        self.loadHistory(results)
-
-        for i in range(1, len(results['items'])+1):
-            self.pc.add_mark(i, ' ' + self.unread)
+        self.loadHistory(results, mark=['' + self.unread])
 
     def up_on_occupied_rows(self, len_str):
         self.pc.up_on_occupied_rows(len_str)
@@ -336,7 +338,6 @@ if __name__ == "__main__":
     dialog_data = DialogData(vk_session)
 
     while True:
-
         os.system('cls' if os.name == 'nt' else 'clear')
 
         dialog_data.select_dialog()
