@@ -72,6 +72,7 @@ class DialogData:
         ids = []
 
         def print_list_dialogs():
+            os.system('cls' if os.name == 'nt' else 'clear')
             print('Your dialogs: ')
             print()
 
@@ -111,33 +112,48 @@ class DialogData:
                 print()
 
         def select(n):
-            n = int(n)
 
             self.OPPONENT_ID = ids[n-1]
-
             info = self.vk.users.get(
                     user_ids=self.OPPONENT_ID,
                 )
-
             self.OPPONENT_NAME = info[0]["first_name"] + ' ' + info[0]['last_name']
-
             if 'unread_count' in list(self.results['items'][n-1]['conversation'].keys()):
                 self.UNREAD_COUNT = int(self.results['items'][n-1]['conversation']['unread_count'])
             else:
                 self.UNREAD_COUNT = 0
 
-        while True:
-            print_list_dialogs()
-            print()
+        def chose(command):
             n = str(input('Chose the dialog: '))
             if n == 'exit':
                 print('the program is close')
                 sys.exit(0)
             elif n == 'upd':
                 os.system('cls' if os.name == 'nt' else 'clear')
+            elif n == 'help':
+                print('\r' + ' ' * os.get_terminal_size().columns + '\r', end='')
+                print('\x1b[A\r' + ' ' * os.get_terminal_size().columns + '\r', end='')
+                if command:
+                    print("""commands: \n""" +
+                    """\texit - close programm\n""" +
+                    """\tupd - reload list contacts\n""")
+                chose(False)
             else:
-                select(n)
+                g = select(int(n))
+                return True
+                #if not g:
+                #    print('\r' + ' ' * os.get_terminal_size().columns + '\r', end='')
+                #    print('\x1b[A\r' + ' ' * os.get_terminal_size().columns + '\r', end='')
+                #    chose(True)
+            return False
+
+        while True:
+            print_list_dialogs()
+            print()
+            c = chose(True)
+            if c:
                 break
+
 
 
 class ChatListener(Thread):
@@ -238,7 +254,7 @@ class ChatDraw:
         if not sender == ls:
             self.markAsRead()
 
-        self.pc.add_message(sender, text, mark=[' ' + self.unread])
+        self.pc.add_message(sender, text, mark=[str(' ' + self.unread)])
 
         dialog_data.MESSAGES_IDS.append(str(id))
         print('> ', end='')
@@ -319,7 +335,16 @@ class ChatDraw:
                 count=dialog_data.UNREAD_COUNT,
                 offset=0,
             )
-        self.loadHistory(results, mark=['' + self.unread])
+        self.loadHistory(results, mark=[' ' + self.unread])
+
+    def print_help(self):
+        help =  ("""help: """ +
+                """\tdel {number}            - remove message only for your\n""" +
+                """\tdelfa {number}          - remove message for all\n""" +
+                """\tedit {number} {text}    - edit message\n""" +
+                """\thistory {number} {text} - load history messaging\n""" +
+                """\thelp                    - show command list""")
+        self.pc.add_skip(1, help)
 
     def up_on_occupied_rows(self, len_str):
         self.pc.up_on_occupied_rows(len_str)
@@ -406,6 +431,9 @@ if __name__ == "__main__":
                         offset=int(len(dialog_data.MESSAGES_IDS))
                     )
                 chat_draw.loadHistory(results)
+
+            elif command[0] == 'help':
+                chat_draw.print_help()
 
             else:
                 post = " ".join(str(post).split())
