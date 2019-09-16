@@ -37,13 +37,6 @@ class UserData:
                 elif param == 'USER_NAME':
                     self.USER_NAME = str(user.split('=')[1]).split('\n')[0]
 
-        """
-        with open('contacts.txt', 'r', encoding="utf8") as file:
-            for user in file.readlines():
-                user = user.split(':')
-                self.CONTACTS.append(str(int(user[0])))
-        """
-
         vk_session = vk_api.VkApi(token=self.TOKEN)
         vk = vk_session.get_api()
 
@@ -141,10 +134,7 @@ class DialogData:
             else:
                 g = select(int(n))
                 return True
-                #if not g:
-                #    print('\r' + ' ' * os.get_terminal_size().columns + '\r', end='')
-                #    print('\x1b[A\r' + ' ' * os.get_terminal_size().columns + '\r', end='')
-                #    chose(True)
+            
             return False
 
         while True:
