@@ -27,7 +27,6 @@ $ git clone https://github.com/IVIGOR13/termvkchat.git
 ## Tuning
 ```
 $ pip install vk_api
-$ git clone https://github.com/IVIGOR13/print_chat.git
 ```
 move the file /print_chat/print_chat.py to the directory /termvkchat/
 
@@ -38,7 +37,7 @@ in the settings.txt file, specify the missing data:
 ## Launch
 ```
 $ cd termvkchat
-$ python termvkchat
+$ python termvkchat.py
 ```
 
 
