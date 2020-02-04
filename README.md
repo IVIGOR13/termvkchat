@@ -27,8 +27,8 @@ $ git clone https://github.com/IVIGOR13/termvkchat.git
 ## Tuning
 ```
 $ pip install vk_api
+$ pip install print_chat
 ```
-move the file /print_chat/print_chat.py to the directory /termvkchat/
 
 in the settings.txt file, specify the missing data:
 * token your vk community
