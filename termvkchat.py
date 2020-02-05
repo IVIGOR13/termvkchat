@@ -8,7 +8,7 @@ import sys
 import os
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
-import print_chat as pct
+from print_chat import print_chat as pct
 from threading import Thread
 import threading
 import ctypes
@@ -134,7 +134,7 @@ class DialogData:
             else:
                 g = select(int(n))
                 return True
-            
+
             return False
 
         while True:
