@@ -1,0 +1,4 @@
+# This requirements file lists all dependecies for this project.
+# Run 'pip install -r requirements.txt' to install dependencies
+vk_api==11.8.0
+print_chat==0.4
